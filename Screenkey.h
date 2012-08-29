@@ -9,7 +9,7 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    Foobar is distributed in the hope that it will be useful,
+    Arduino Screenkey Library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -37,16 +37,50 @@
 #include "Arduino.h"
 #include <fontALL.h>
 
-// Bright and dark constants for each color
-#define BL_NONE    0x00
 
+// Which screeneky to use LC24 or RGB24
+// Uncomment one or the other, not both
+
+#define LC24_SCREENKEY
+//#define RGB24_SCREENKEY
+
+
+
+// Bright and dark constants for each color
+
+#if defined(LC24_SCREENKEY) 
+// for LC24 screenkey
+#define BL_NONE    0x00
 #define BR_GREEN   0x33
 #define BR_RED	   0xCC
 #define BR_ORANGE  0xFF
-
 #define DK_GREEN   0x03
 #define DK_RED     0x0C
 #define DK_ORANGE  0x0F
+#endif
+
+#if defined(RGB24_SCREENKEY) 
+// For RGB24 Screenkey
+#define BL_NONE 0x00
+#define BR_BLUE 0x11
+#define BR_RED 0x22
+#define BR_MAG 0x33
+#define BR_GREEN 0xCC
+#define BR_WHITE 0x27
+#define DK_BLUE 0x01
+#define DK_RED 0x02
+#define DK_MAG 0x03
+#define DK_GREEN 0x04
+#define DK_WHITE 0x07
+#define YELLOW 0x06
+#define ORANGE 0x26
+#define PINK 0x23
+#define CYAN 0x05
+#endif
+
+
+
+
 #define BYTE    0
 
 //Define LCD Size
