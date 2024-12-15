@@ -41,8 +41,8 @@
 // Which screeneky to use LC16, LC24 or RGB24
 // Uncomment one or the other, not both
 
-#define LC16_SCREENKEY
-//#define LC24_SCREENKEY
+//#define LC16_SCREENKEY
+#define LC24_SCREENKEY
 //#define RGB24_SCREENKEY
 
 
