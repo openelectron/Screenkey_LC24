@@ -97,9 +97,13 @@ void Screenkey::screenkey_write_img(uint8_t * data)
 
   screenkey_start();
   screenkey_write(0x80,1);
+#if defined(LC16_SCREENKEY)
+  for (i=0; i<64; i++)
+    screenkey_write(data[i], 1);
+#else
   for (i=0; i<108; i++)
     screenkey_write(data[i], 1);
-
+#endif
   screenkey_stop();
 
 }
@@ -109,9 +113,13 @@ void Screenkey::fill()
 {
 
   uint8_t i;
+#if defined(LC16_SCREENKEY) 
+  for (i=0; i<64; i++)
+    dwg_buff[i] = 0xFF;
+#else
   for (i=0; i<108; i++)
     dwg_buff[i] = 0xFF;
-
+#endif
 }
 
 
@@ -119,8 +127,13 @@ void Screenkey::clear()
 {
 
   uint8_t i;
+#if defined(LC16_SCREENKEY) 
+  for (i=0; i<64; i++)
+    dwg_buff[i] = 0x00;
+#else
   for (i=0; i<108; i++)
     dwg_buff[i] = 0x00;
+#endif
 
 }
 
@@ -138,8 +151,12 @@ void Screenkey::set_color(uint8_t color)
 void Screenkey::init()
 {
  
-screenkey_reg_1(0xEE, 0x00);
+  screenkey_reg_1(0xEE, 0x00);
+#if defined(LC16_SCREENKEY)
+  screenkey_reg_2(0xEF, 0x02, 0x05);
+#else
   screenkey_reg_2(0xEF, 0x07, 0x00);
+#endif
   set_color(BL_NONE);
 }
 
@@ -147,9 +164,13 @@ void Screenkey::load_img(uint8_t * data)
 {
 // dwg_buff = data;
   uint8_t i;
+#if defined(LC16_SCREENKEY) 
+  for (i=0; i<64; i++)
+    dwg_buff[i] = data[i];
+#else
   for (i=0; i<108; i++)
    dwg_buff[i] = data[i];
-
+#endif
 
 
 }
@@ -168,13 +189,19 @@ int _bitnum, _buff_byte, _buff_bit;
       }
    else
       {
-      // for (_bitnum=0; _bitnum<864; _bitnum++)
-      // {
+#if defined(LC16_SCREENKEY) 
+          _bitnum = 512 - ((32-x) + (y*32));
+          _buff_byte = _bitnum/8;
+          _buff_bit = _bitnum%8;
+   	  dwg_buff[_buff_byte] |= (1<<_buff_bit);	
+      
+#else
           _bitnum = 864-( (x+1) + ((y)*36));
           _buff_byte = _bitnum/8;
           _buff_bit = _bitnum%8;
    	  dwg_buff[_buff_byte] |= (1<<_buff_bit);	
-     //  }
+
+#endif
       }
 
 }
@@ -302,11 +329,8 @@ void Screenkey::draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 void Screenkey::bitmap(uint8_t x, uint8_t y, const unsigned char * bmp,
 				   uint16_t i, uint8_t width, uint8_t height) {
 
-	uint8_t temp; //, lshift, rshift, save, xtra;
-//	uint16_t si = 0;
-	
-//	rshift = x&7;
-//	lshift = 8-rshift;
+	uint8_t temp; 
+
 	if (width == 0) {
 		width = pgm_read_byte((uint32_t)(bmp) + i);
 		i++;
@@ -315,22 +339,7 @@ void Screenkey::bitmap(uint8_t x, uint8_t y, const unsigned char * bmp,
 		height = pgm_read_byte((uint32_t)(bmp) + i);
 		i++;
 	}
-        // 1px at each corner for debug
-        //set_pixel(x, y);
-        //set_pixel(x+width-1, y);
-        //set_pixel(x, y-height);
-        //set_pixel(x+width-1,y-height );
-
-		
-//	if (width&7) {
-//		xtra = width&7;
-//		width = width/8;
-//		width++;
-//	}
-//	else {
-//		xtra = 8;
-//		width = width/8;
-//	}
+        
 	
 	for (uint8_t h = 0; h < height; h++) {
          	temp = pgm_read_byte((uint32_t)(bmp) + i++);
