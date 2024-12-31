@@ -38,15 +38,29 @@
 #include <fontALL.h>
 
 
-// Which screeneky to use LC24 or RGB24
+// Which screeneky to use LC16, LC24 or RGB24
 // Uncomment one or the other, not both
 
+//#define LC16_SCREENKEY
 #define LC24_SCREENKEY
 //#define RGB24_SCREENKEY
 
 
 
 // Bright and dark constants for each color
+
+#if defined(LC16_SCREENKEY) 
+// for LC16 screenkey
+#define BL_NONE    0x00
+#define BR_GREEN   0x33
+#define BR_RED	   0xCC
+#define BR_ORANGE  0xFF
+#define DK_GREEN   0x03
+#define DK_RED     0x0C
+#define DK_ORANGE  0x0F
+#define GRN_ORANGE 0x3F
+#define RED_ORANGE 0xCF
+#endif
 
 #if defined(LC24_SCREENKEY) 
 // for LC24 screenkey
@@ -84,8 +98,23 @@
 #define BYTE    0
 
 //Define LCD Size
+
+#if defined(LC24_SCREENKEY)
 #define XRES	   36
-#define YRES       24
+#define YRES     24
+#endif
+
+#if defined(RGB24_SCREENKEY)
+#define XRES	   36
+#define YRES     24
+#endif
+
+#if defined(LC16_SCREENKEY)
+#define XRES	   32
+#define YRES     16
+#endif
+
+
 // Global Variables for writing to screenkeys
  extern volatile uint8_t  phase;
  extern volatile uint16_t bits;
